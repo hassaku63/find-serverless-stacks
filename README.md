@@ -12,25 +12,25 @@ A CLI tool to identify CloudFormation stacks deployed by Serverless Framework.
 - **Multiple output formats**: Supports JSON and TSV output formats
 - **AWS profile support**: Works with multiple AWS accounts
 - **Region targeting**: Search within specific regions
-- **Detection reasoning**: Shows why each stack was identified as SLS3
+- **Detection reasoning**: Shows why each stack was identified as Serverless Framework
 
 ## Installation
 
-### Binary Download
-```bash
-# Download the latest release (Linux/macOS/Windows)
-curl -L https://github.com/username/find-serverless-stacks/releases/latest/download/find_serverless_stacks_$(uname -s)_$(uname -m).tar.gz | tar xz
-sudo mv find_serverless_stacks /usr/local/bin/
-```
-
 ### Go Install
 ```bash
-go install github.com/username/find-serverless-stacks/cmd/find_serverless_stacks@latest
+go install github.com/hassaku63/find-serverless-stacks/cmd/find_serverless_stacks@latest
 ```
 
-### Homebrew (macOS)
+### Build from Source
 ```bash
-brew install username/tap/find_serverless_stacks
+git clone https://github.com/hassaku63/find-serverless-stacks.git
+cd find-serverless-stacks
+make build
+```
+
+### Manual Build
+```bash
+go build -o find_serverless_stacks ./find_serverless_stacks
 ```
 
 ## Usage
@@ -45,6 +45,16 @@ find_serverless_stacks --profile my-aws-profile --region us-west-2
 
 # Output in TSV format
 find_serverless_stacks --profile prod --region ap-northeast-1 --output tsv
+
+# Use AssumeRole for cross-account access
+find_serverless_stacks --region us-east-1 \
+  --assume-role arn:aws:iam::123456789012:role/CrossAccountReadRole \
+  --session-name my-session
+
+# Use AssumeRole with External ID
+find_serverless_stacks --region us-east-1 \
+  --assume-role arn:aws:iam::123456789012:role/SecureRole \
+  --external-id my-external-id
 ```
 
 ### Command Line Options
@@ -54,8 +64,11 @@ find_serverless_stacks --profile prod --region ap-northeast-1 --output tsv
 | `--profile` | `-p` | No | AWS profile name (default: default) |
 | `--region` | `-r` | Yes | AWS region name |
 | `--output` | `-o` | No | Output format: json, tsv (default: json) |
+| `--assume-role` | | No | ARN of the IAM role to assume |
+| `--session-name` | | No | Session name for the assumed role session |
+| `--duration` | | No | Session duration in seconds (900-43200, default: 3600) |
+| `--external-id` | | No | External ID for AssumeRole (required by some roles) |
 | `--help` | `-h` | No | Show help |
-| `--version` | `-v` | No | Show version information |
 
 ## Output Format
 
@@ -107,6 +120,7 @@ This bucket is automatically created by Serverless Framework for:
 
 To run this tool, the following IAM permissions are required:
 
+### Basic Permissions
 ```json
 {
     "Version": "2012-10-17",
@@ -119,6 +133,23 @@ To run this tool, the following IAM permissions are required:
                 "cloudformation:DescribeStackResources"
             ],
             "Resource": "*"
+        }
+    ]
+}
+```
+
+### Additional Permissions for AssumeRole
+When using `--assume-role`, additional permissions are required:
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sts:AssumeRole"
+            ],
+            "Resource": "arn:aws:iam::*:role/YourRoleName"
         }
     ]
 }
@@ -157,12 +188,12 @@ find_serverless_stacks --region us-east-1
 ## Development
 
 ### Prerequisites
-- Go 1.19 or later
+- Go 1.24.6 or later
 - AWS CLI configured
 
 ### Quick Start
 ```bash
-git clone https://github.com/username/find-serverless-stacks.git
+git clone https://github.com/hassaku63/find-serverless-stacks.git
 cd find-serverless-stacks
 make build
 ```
@@ -200,12 +231,6 @@ make install       # Install binary to GOPATH/bin
 make uninstall     # Remove binary from GOPATH/bin
 ```
 
-#### Other Tasks
-```bash
-make docker-build  # Build Docker image
-make help          # Show all available targets
-```
-
 ### Manual Build (Alternative)
 If you prefer not to use Makefile:
 ```bash
@@ -218,10 +243,5 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 ## Contributing
 
-Pull requests and issue reports are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+Pull requests and issue reports are welcome.
 
-## Related Documentation
-
-- [Detection Logic Details](docs/how-to-checking-serverless.md) (Japanese)
-- [Implementation Plan](docs/implementation-plan.md) (Japanese)
-- [Testable Implementation Examples](docs/example-testable-impl.md) (Japanese)
