@@ -59,7 +59,7 @@ Thumbs.db
 # AWS credentials (if accidentally added)
 .aws/
 credentials
-config
+/config
 
 # Test artifacts
 testdata/output/
