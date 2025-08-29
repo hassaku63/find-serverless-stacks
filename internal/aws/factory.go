@@ -68,6 +68,11 @@ func applyAssumeRoleToConfig(ctx context.Context, cfg aws.Config, roleConfig *As
 	provider := stscreds.NewAssumeRoleProvider(stsClient, roleConfig.RoleARN, func(o *stscreds.AssumeRoleOptions) {
 		o.RoleSessionName = roleConfig.SessionName
 		o.Duration = time.Duration(roleConfig.Duration) * time.Second
+
+		// Add External ID if specified
+		if roleConfig.ExternalID != "" {
+			o.ExternalID = aws.String(roleConfig.ExternalID)
+		}
 	})
 
 	// Create new config with AssumeRole credentials

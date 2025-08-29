@@ -17,7 +17,7 @@ type AuthConfig struct {
 	Profile string
 	Region  string
 
-	// AssumeRole configuration (Phase 1)
+	// AssumeRole configuration
 	AssumeRole *AssumeRoleCredentials
 }
 
@@ -26,6 +26,7 @@ type AssumeRoleCredentials struct {
 	RoleARN     string
 	SessionName string
 	Duration    int32
+	ExternalID  string
 }
 
 // NewCloudFormationClient creates a new CloudFormation client with the specified configuration
@@ -85,6 +86,11 @@ func applyAssumeRole(ctx context.Context, awsConfig aws.Config, roleConfig *Assu
 	provider := stscreds.NewAssumeRoleProvider(stsClient, roleConfig.RoleARN, func(o *stscreds.AssumeRoleOptions) {
 		o.RoleSessionName = roleConfig.SessionName
 		o.Duration = time.Duration(roleConfig.Duration) * time.Second
+
+		// Add External ID if specified
+		if roleConfig.ExternalID != "" {
+			o.ExternalID = aws.String(roleConfig.ExternalID)
+		}
 	})
 
 	// Create new config with AssumeRole credentials
