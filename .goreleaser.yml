@@ -9,7 +9,7 @@ before:
 
 builds:
   - id: find_serverless_stacks
-    main: ./cmd/find_serverless_stacks
+    main: ./cmd/find_serverless_stacks/main.go
     binary: find_serverless_stacks
     env:
       - CGO_ENABLED=0
