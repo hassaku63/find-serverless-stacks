@@ -1,4 +1,4 @@
-version: 1
+version: 2
 
 project_name: find_serverless_stacks
 
@@ -23,8 +23,8 @@ builds:
     ldflags:
       - -s -w
       - -X main.version={{.Version}}
-      - -X main.buildTime={{.Date}}
-      - -X main.gitCommit={{.ShortCommit}}
+      - -X main.buildTime={{.CommitDate}}
+      - -X main.gitCommit={{.Commit}}
 
 archives:
   - id: find_serverless_stacks
