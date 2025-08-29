@@ -129,6 +129,32 @@ docker-build:
 	@echo "Building Docker image..."
 	docker build -t $(BINARY_NAME):$(VERSION) .
 
+# Release related targets
+.PHONY: release-check
+release-check:
+	@echo "Checking GoReleaser configuration..."
+	@if command -v goreleaser >/dev/null 2>&1; then \
+		goreleaser check; \
+	else \
+		echo "GoReleaser not found. Install it with: go install github.com/goreleaser/goreleaser@latest"; \
+		exit 1; \
+	fi
+
+.PHONY: release-snapshot
+release-snapshot:
+	@echo "Building snapshot release locally..."
+	@if command -v goreleaser >/dev/null 2>&1; then \
+		goreleaser release --snapshot --clean; \
+	else \
+		echo "GoReleaser not found. Install it with: go install github.com/goreleaser/goreleaser@latest"; \
+		exit 1; \
+	fi
+
+.PHONY: release-clean
+release-clean:
+	@echo "Cleaning release artifacts..."
+	rm -rf dist/
+
 # Show help
 .PHONY: help
 help:
@@ -150,4 +176,7 @@ help:
 	@echo "  run-dev       - Run development version with sample parameters"
 	@echo "  run-help      - Show application help"
 	@echo "  docker-build  - Build Docker image"
+	@echo "  release-check - Check GoReleaser configuration"
+	@echo "  release-snapshot - Build snapshot release locally"
+	@echo "  release-clean - Clean release artifacts"
 	@echo "  help          - Show this help message"

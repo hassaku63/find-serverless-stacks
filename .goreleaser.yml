@@ -1,0 +1,68 @@
+version: 2
+
+project_name: find_serverless_stacks
+
+before:
+  hooks:
+    - go mod tidy
+    - go generate ./...
+
+builds:
+  - id: find_serverless_stacks
+    main: ./cmd/find_serverless_stacks
+    binary: find_serverless_stacks
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.buildTime={{.Date}}
+      - -X main.gitCommit={{.ShortCommit}}
+
+archives:
+  - id: find_serverless_stacks
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: "checksums.txt"
+  algorithm: sha256
+
+release:
+  prerelease: auto
+  name_template: "{{ .ProjectName }} {{ .Version }}"
+  header: |
+    ## Changes
+
+    This release was built automatically when the GitHub Release was published.
+
+  footer: |
+    ## Installation
+
+    ### Binary Download
+    Download the appropriate binary for your platform from the assets above.
+
+    ### Using Go
+    ```bash
+    go install github.com/hassaku63/find-serverless-stacks/cmd/find_serverless_stacks@{{ .Tag }}
+    ```
+
+    **Full Changelog**: https://github.com/hassaku63/find-serverless-stacks/compare/{{ .PreviousTag }}...{{ .Tag }}
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - "typo"
