@@ -4,16 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Serverless Framework v3 でデプロイされた CloudFormation Stack を推測する。
+Serverless Framework でデプロイされた CloudFormation Stack を推測する。
 
-- CLI ツール `find_sls3_stacks` として実行可能
+- CLI ツール `find_serverless_stacks` として実行可能
 - AWS プロファイルと、リージョンを指定して実行可能。一度の実行で特定の AWS アカウントの1つのリージョンを対象とする
 - 結果は stdout に出力。json, tsv 形式をサポート
 
 ### Example Usage
 
 ```bash
-$ find_sls3_stacks --profile my-aws-profile --region us-east-1 --output json
+$ find_serverless_stacks --profile my-aws-profile --region us-east-1 --output json
 {
     "stacks": [
         {
@@ -22,7 +22,7 @@ $ find_sls3_stacks --profile my-aws-profile --region us-east-1 --output json
             "region": "us-east-1",
             "createdAt": "2023-10-01T12:34:56Z",
             "updatedAt": "2023-10-02T12:34:56Z",
-            "description": "My Serverless Framework v3 stack",
+            "description": "My Serverless Framework stack",
             "stackTags": {
                 "Owner": "team-a",
             },
@@ -36,7 +36,7 @@ $ find_sls3_stacks --profile my-aws-profile --region us-east-1 --output json
             "region": "us-east-1",
             "createdAt": "2023-10-03T12:34:56Z",
             "updatedAt": "2023-10-04T12:34:56Z",
-            "description": "Another Serverless Framework v3 stack",
+            "description": "Another Serverless Framework stack",
             "stackTags": {
                 "Owner": "team-b",
             },
@@ -50,7 +50,7 @@ $ find_sls3_stacks --profile my-aws-profile --region us-east-1 --output json
 
 ## Development Notes
 
-This project is in early development stage. The primary goal is to create a Go CLI tool that identifies CloudFormation stacks deployed by Serverless Framework v3.
+This project is in early development stage. The primary goal is to create a Go CLI tool that identifies CloudFormation stacks deployed by Serverless Framework.
 
 ### Architecture Guidelines
 
@@ -71,4 +71,4 @@ The tool should support:
 
 JSON output should include:
 - `stacks` array with `stackName`, `stackId`, and `region` fields
-- Stack identification should focus on Serverless Framework v3 deployed resources
+- Stack identification should focus on Serverless Framework deployed resources

@@ -1,8 +1,8 @@
-# Serverless Framework v3 で構築されたスタックの判定方法
+# Serverless Framework で構築されたスタックの判定方法
 
 ## 概要
 
-Serverless Framework v3 (sls) でデプロイされた CloudFormation スタックを推定するための判定ロジックについて説明する。
+Serverless Framework でデプロイされた CloudFormation スタックを推定するための判定ロジックについて説明する。
 
 ## 判定方法
 
@@ -55,7 +55,7 @@ func hasServerlessDeploymentBucket(resources []types.StackResource) bool {
 3. 論理 ID `ServerlessDeploymentBucket` のリソースが存在するスタックを抽出
 
 #### 判定精度
-この方法は非常に高い精度で Serverless Framework v3 のスタックを判定できる理由：
+この方法は非常に高い精度で Serverless Framework のスタックを判定できる理由：
 - `ServerlessDeploymentBucket` は Serverless Framework 特有のリソース名
 - 他のツールやフレームワークがこの論理 ID を使用する可能性は極めて低い
 - Serverless Framework でデプロイされたほぼすべてのスタックにこのリソースが含まれる

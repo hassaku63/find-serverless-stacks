@@ -2,14 +2,14 @@
 
 ## 概要
 
-この文書では、`find_sls3_stacks` に AWS AssumeRole サポートを追加するための設計と実装計画を説明します。この機能により、クロスアカウント スタック検出と、企業 AWS 環境で一般的に使用されるロールベースのアクセスパターンをサポートできます。
+この文書では、`find_serverless_stacks` に AWS AssumeRole サポートを追加するための設計と実装計画を説明します。この機能により、クロスアカウント スタック検出と、企業 AWS 環境で一般的に使用されるロールベースのアクセスパターンをサポートできます。
 
 ## 使用例
 
 ### 1. クロスアカウント スタック検出
 ```bash
 # AssumeRole を使用して異なるアカウントのスタックを検出
-find_sls3_stacks --region us-east-1 \
+find_serverless_stacks --region us-east-1 \
   --assume-role arn:aws:iam::123456789012:role/CrossAccountReadRole \
   --output json
 ```
@@ -17,7 +17,7 @@ find_sls3_stacks --region us-east-1 \
 ### 2. マルチアカウント組織スキャン
 ```bash
 # 組織レベルロールで複数アカウントをスキャン
-find_sls3_stacks --region us-east-1 \
+find_serverless_stacks --region us-east-1 \
   --assume-role arn:aws:iam::123456789012:role/OrganizationReaderRole \
   --external-id "unique-external-id" \
   --session-name "sls3-discovery-session"
@@ -26,7 +26,7 @@ find_sls3_stacks --region us-east-1 \
 ### 3. 一時的な昇格権限
 ```bash
 # 包括的スキャンのために一時的な昇格権限を使用
-find_sls3_stacks --region us-east-1 \
+find_serverless_stacks --region us-east-1 \
   --profile base-profile \
   --assume-role arn:aws:iam::123456789012:role/ElevatedReadRole \
   --duration 3600
@@ -37,10 +37,10 @@ find_sls3_stacks --region us-east-1 \
 ### 新しいコマンドライン引数
 
 ```bash
-find_sls3_stacks [フラグ]
+find_serverless_stacks [フラグ]
 
 既存のフラグ:
-  -h, --help             find_sls3_stacks のヘルプ
+  -h, --help             find_serverless_stacks のヘルプ
   -o, --output string    出力フォーマット (json, tsv) (default "json")
   -p, --profile string   AWS プロファイル名 (default "default")
   -r, --region string    AWS リージョン名 (必須)
@@ -59,20 +59,20 @@ find_sls3_stacks [フラグ]
 
 #### 基本的な AssumeRole
 ```bash
-find_sls3_stacks --region us-east-1 \
+find_serverless_stacks --region us-east-1 \
   --assume-role arn:aws:iam::123456789012:role/ReadOnlyRole
 ```
 
 #### External ID を使った AssumeRole
 ```bash
-find_sls3_stacks --region us-east-1 \
+find_serverless_stacks --region us-east-1 \
   --assume-role arn:aws:iam::123456789012:role/ThirdPartyRole \
   --external-id "company-unique-id-2023"
 ```
 
 #### MFA を使った AssumeRole - 明示的トークン (自動化対応)
 ```bash
-find_sls3_stacks --region us-east-1 \
+find_serverless_stacks --region us-east-1 \
   --assume-role arn:aws:iam::123456789012:role/MFAProtectedRole \
   --mfa-serial arn:aws:iam::111122223333:mfa/user@example.com \
   --mfa-token 123456
@@ -80,7 +80,7 @@ find_sls3_stacks --region us-east-1 \
 
 #### MFA を使った AssumeRole - インタラクティブ入力 (人間が使いやすい)
 ```bash
-find_sls3_stacks --region us-east-1 \
+find_serverless_stacks --region us-east-1 \
   --assume-role arn:aws:iam::123456789012:role/MFAProtectedRole \
   --mfa-serial arn:aws:iam::111122223333:mfa/user@example.com
 
@@ -90,13 +90,13 @@ find_sls3_stacks --region us-east-1 \
 
 #### MFA なしの AssumeRole (最も一般的なケース)
 ```bash
-find_sls3_stacks --region us-east-1 \
+find_serverless_stacks --region us-east-1 \
   --assume-role arn:aws:iam::123456789012:role/StandardReadRole
 ```
 
 #### CI/CD での AssumeRole - 非インタラクティブモード
 ```bash
-find_sls3_stacks --region us-east-1 \
+find_serverless_stacks --region us-east-1 \
   --assume-role arn:aws:iam::123456789012:role/MFAProtectedRole \
   --mfa-serial arn:aws:iam::111122223333:mfa/user@example.com \
   --non-interactive
@@ -107,7 +107,7 @@ find_sls3_stacks --region us-east-1 \
 
 #### プロファイルと AssumeRole の組み合わせ
 ```bash
-find_sls3_stacks --region us-east-1 \
+find_serverless_stacks --region us-east-1 \
   --profile source-account-profile \
   --assume-role arn:aws:iam::123456789012:role/CrossAccountRole \
   --session-name "audit-session" \
@@ -118,7 +118,7 @@ find_sls3_stacks --region us-east-1 \
 ```bash
 # 環境変数で MFA トークンを設定
 export FIND_SLS3_MFA_TOKEN=123456
-find_sls3_stacks --region us-east-1 \
+find_serverless_stacks --region us-east-1 \
   --assume-role arn:aws:iam::123456789012:role/MFAProtectedRole \
   --mfa-serial arn:aws:iam::111122223333:mfa/user@example.com
 
@@ -305,7 +305,7 @@ func IsExternalIDError(err error) bool
 
 **完了時に利用可能な機能:**
 ```bash
-find_sls3_stacks --region us-east-1 \
+find_serverless_stacks --region us-east-1 \
   --assume-role arn:aws:iam::123456789012:role/ReadRole \
   --session-name "sls3-discovery" \
   --duration 7200
@@ -335,7 +335,7 @@ find_sls3_stacks --region us-east-1 \
 
 **完了時に利用可能な機能:**
 ```bash
-find_sls3_stacks --region us-east-1 \
+find_serverless_stacks --region us-east-1 \
   --assume-role arn:aws:iam::123456789012:role/ThirdPartyRole \
   --external-id "company-unique-id-2023"
 ```
@@ -359,13 +359,13 @@ find_sls3_stacks --region us-east-1 \
 **完了時に利用可能な機能:**
 ```bash
 # 明示的トークン
-find_sls3_stacks --assume-role ROLE --mfa-serial SERIAL --mfa-token 123456
+find_serverless_stacks --assume-role ROLE --mfa-serial SERIAL --mfa-token 123456
 
 # インタラクティブ入力
-find_sls3_stacks --assume-role ROLE --mfa-serial SERIAL
+find_serverless_stacks --assume-role ROLE --mfa-serial SERIAL
 
 # 非インタラクティブモード
-find_sls3_stacks --assume-role ROLE --mfa-serial SERIAL --non-interactive
+find_serverless_stacks --assume-role ROLE --mfa-serial SERIAL --non-interactive
 ```
 
 #### 3.2 インタラクティブ入力実装
@@ -530,8 +530,8 @@ find_sls3_stacks --assume-role ROLE --mfa-serial SERIAL --non-interactive
 
 ```bash
 # MFA 不使用時 - 両方とも同じ結果
-find_sls3_stacks --assume-role ROLE
-find_sls3_stacks --assume-role ROLE --non-interactive
+find_serverless_stacks --assume-role ROLE
+find_serverless_stacks --assume-role ROLE --non-interactive
 ```
 
 ### 役立つエラーメッセージ
@@ -564,7 +564,7 @@ IAM ポリシー例:
 --mfa-serial と --mfa-token の両方を提供してください:
 
 例:
-  find_sls3_stacks --region us-east-1 \
+  find_serverless_stacks --region us-east-1 \
     --assume-role arn:aws:iam::123456789012:role/MFAProtectedRole \
     --mfa-serial arn:aws:iam::111122223333:mfa/user@example.com \
     --mfa-token 123456
@@ -587,7 +587,7 @@ IAM ポリシー例:
 使用法: --mfa-serial を使用する場合、--mfa-token が必要です
 
 例:
-  find_sls3_stacks --region us-east-1 \
+  find_serverless_stacks --region us-east-1 \
     --assume-role arn:aws:iam::123456789012:role/Role \
     --mfa-serial arn:aws:iam::111122223333:mfa/user@example.com \
     --mfa-token 123456
@@ -606,7 +606,7 @@ MFA トークンを入力してください (arn:aws:iam::111122223333:mfa/user@
 ### MFA 入力エクスペリエンス
 ```
 # インタラクティブプロンプト（非表示入力）
-find_sls3_stacks --region us-east-1 --assume-role ROLE --mfa-serial SERIAL
+find_serverless_stacks --region us-east-1 --assume-role ROLE --mfa-serial SERIAL
 MFA トークンを入力してください (arn:aws:iam::111122223333:mfa/user@example.com): 
 [ユーザーが 123456 を入力、●●●●●● として表示]
 ✓ MFA 認証成功

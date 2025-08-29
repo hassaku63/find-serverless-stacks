@@ -2,7 +2,7 @@
 
 ## System Overview
 
-`find_sls3_stacks` is a Go CLI application that identifies CloudFormation stacks deployed by Serverless Framework v3 through the detection of characteristic resources, primarily the `ServerlessDeploymentBucket`.
+`find_serverless_stacks` is a Go CLI application that identifies CloudFormation stacks deployed by Serverless Framework through the detection of characteristic resources, primarily the `ServerlessDeploymentBucket`.
 
 ## Architecture Diagram
 
@@ -41,7 +41,7 @@
 
 ## Core Components
 
-### 1. CLI Interface (`cmd/find_sls3_stacks/`)
+### 1. CLI Interface (`cmd/find_serverless_stacks/`)
 
 **Responsibility**: Command-line argument parsing and user interaction
 

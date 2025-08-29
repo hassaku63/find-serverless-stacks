@@ -1,14 +1,14 @@
-# find_sls3_stacks
+# find_serverless_stacks
 
-A CLI tool to identify CloudFormation stacks deployed by Serverless Framework v3.
+A CLI tool to identify CloudFormation stacks deployed by Serverless Framework.
 
 ## Overview
 
-`find_sls3_stacks` detects CloudFormation stacks deployed by Serverless Framework v3 in a specified AWS account and region, outputting results in JSON or TSV format.
+`find_serverless_stacks` detects CloudFormation stacks deployed by Serverless Framework in a specified AWS account and region, outputting results in JSON or TSV format.
 
 ## Features
 
-- **High-precision detection**: Identifies Serverless Framework v3 stacks by detecting `ServerlessDeploymentBucket` resources
+- **High-precision detection**: Identifies Serverless Framework stacks by detecting `ServerlessDeploymentBucket` resources
 - **Multiple output formats**: Supports JSON and TSV output formats
 - **AWS profile support**: Works with multiple AWS accounts
 - **Region targeting**: Search within specific regions
@@ -19,18 +19,18 @@ A CLI tool to identify CloudFormation stacks deployed by Serverless Framework v3
 ### Binary Download
 ```bash
 # Download the latest release (Linux/macOS/Windows)
-curl -L https://github.com/username/find-sls3-stacks/releases/latest/download/find_sls3_stacks_$(uname -s)_$(uname -m).tar.gz | tar xz
-sudo mv find_sls3_stacks /usr/local/bin/
+curl -L https://github.com/username/find-serverless-stacks/releases/latest/download/find_serverless_stacks_$(uname -s)_$(uname -m).tar.gz | tar xz
+sudo mv find_serverless_stacks /usr/local/bin/
 ```
 
 ### Go Install
 ```bash
-go install github.com/username/find-sls3-stacks/cmd/find_sls3_stacks@latest
+go install github.com/username/find-serverless-stacks/cmd/find_serverless_stacks@latest
 ```
 
 ### Homebrew (macOS)
 ```bash
-brew install username/tap/find_sls3_stacks
+brew install username/tap/find_serverless_stacks
 ```
 
 ## Usage
@@ -38,13 +38,13 @@ brew install username/tap/find_sls3_stacks
 ### Basic Usage
 ```bash
 # Search in us-east-1 with default profile
-find_sls3_stacks --region us-east-1
+find_serverless_stacks --region us-east-1
 
 # Use specific AWS profile
-find_sls3_stacks --profile my-aws-profile --region us-west-2
+find_serverless_stacks --profile my-aws-profile --region us-west-2
 
 # Output in TSV format
-find_sls3_stacks --profile prod --region ap-northeast-1 --output tsv
+find_serverless_stacks --profile prod --region ap-northeast-1 --output tsv
 ```
 
 ### Command Line Options
@@ -69,7 +69,7 @@ find_sls3_stacks --profile prod --region ap-northeast-1 --output tsv
             "region": "us-east-1",
             "createdAt": "2023-10-01T12:34:56Z",
             "updatedAt": "2023-10-02T12:34:56Z",
-            "description": "My Serverless Framework v3 stack",
+            "description": "My Serverless Framework stack",
             "stackTags": {
                 "Owner": "team-a",
                 "Environment": "development"
@@ -85,12 +85,12 @@ find_sls3_stacks --profile prod --region ap-northeast-1 --output tsv
 ### TSV Output Example
 ```
 stackName	stackId	region	createdAt	updatedAt	description	reasons
-my-api-dev	arn:aws:cloudformation:us-east-1:123456789012:stack/my-api-dev/abcd1234	us-east-1	2023-10-01T12:34:56Z	2023-10-02T12:34:56Z	My Serverless Framework v3 stack	Contains resource with logical ID 'ServerlessDeploymentBucket'
+my-api-dev	arn:aws:cloudformation:us-east-1:123456789012:stack/my-api-dev/abcd1234	us-east-1	2023-10-01T12:34:56Z	2023-10-02T12:34:56Z	My Serverless Framework stack	Contains resource with logical ID 'ServerlessDeploymentBucket'
 ```
 
 ## Detection Logic
 
-This tool identifies stacks deployed by Serverless Framework v3 using the following method:
+This tool identifies stacks deployed by Serverless Framework using the following method:
 
 ### ServerlessDeploymentBucket Resource Detection
 
@@ -101,7 +101,7 @@ This bucket is automatically created by Serverless Framework for:
 - Storing CloudFormation template files  
 - Storing other deployment artifacts
 
-**Detection Accuracy**: This method provides very high accuracy for identifying SLS3 stacks. `ServerlessDeploymentBucket` is a resource name specific to Serverless Framework, and the probability of other tools using the same logical ID is extremely low.
+**Detection Accuracy**: This method provides very high accuracy for identifying Serverless Framework stacks. `ServerlessDeploymentBucket` is a resource name specific to Serverless Framework, and the probability of other tools using the same logical ID is extremely low.
 
 ## Required AWS Permissions
 
@@ -151,7 +151,7 @@ For detailed logging output:
 ```bash
 export AWS_SDK_LOAD_CONFIG=1
 export AWS_LOG_LEVEL=debug
-find_sls3_stacks --region us-east-1
+find_serverless_stacks --region us-east-1
 ```
 
 ## Development
@@ -162,8 +162,8 @@ find_sls3_stacks --region us-east-1
 
 ### Quick Start
 ```bash
-git clone https://github.com/username/find-sls3-stacks.git
-cd find-sls3-stacks
+git clone https://github.com/username/find-serverless-stacks.git
+cd find-serverless-stacks
 make build
 ```
 
@@ -209,7 +209,7 @@ make help          # Show all available targets
 ### Manual Build (Alternative)
 If you prefer not to use Makefile:
 ```bash
-go build -o find_sls3_stacks ./cmd/find_sls3_stacks
+go build -o find_serverless_stacks ./cmd/find_serverless_stacks
 ```
 
 ## License
@@ -222,6 +222,6 @@ Pull requests and issue reports are welcome. See [CONTRIBUTING.md](CONTRIBUTING.
 
 ## Related Documentation
 
-- [Detection Logic Details](docs/how-to-checking-sls3.md) (Japanese)
+- [Detection Logic Details](docs/how-to-checking-serverless.md) (Japanese)
 - [Implementation Plan](docs/implementation-plan.md) (Japanese)
 - [Testable Implementation Examples](docs/example-testable-impl.md) (Japanese)
