@@ -24,16 +24,16 @@ func (f *JSONFormatter) Format(stacks []models.Stack) (string, error) {
 	if stacks == nil {
 		stacks = []models.Stack{}
 	}
-	
+
 	output := models.StacksOutput{
 		Stacks: stacks,
 	}
-	
+
 	jsonData, err := json.Marshal(output)
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal JSON: %w", err)
 	}
-	
+
 	return string(jsonData), nil
 }
 
@@ -43,11 +43,11 @@ type TSVFormatter struct{}
 // Format implements the Formatter interface for TSV output
 func (f *TSVFormatter) Format(stacks []models.Stack) (string, error) {
 	var result strings.Builder
-	
+
 	// Write header
 	header := []string{
 		"StackName",
-		"StackID", 
+		"StackID",
 		"Region",
 		"Description",
 		"CreatedAt",
@@ -57,7 +57,7 @@ func (f *TSVFormatter) Format(stacks []models.Stack) (string, error) {
 	}
 	result.WriteString(strings.Join(header, "\t"))
 	result.WriteString("\n")
-	
+
 	// Write data rows
 	for _, stack := range stacks {
 		row := []string{
@@ -73,13 +73,13 @@ func (f *TSVFormatter) Format(stacks []models.Stack) (string, error) {
 		result.WriteString(strings.Join(row, "\t"))
 		result.WriteString("\n")
 	}
-	
+
 	// Remove trailing newline if present
 	output := result.String()
 	if strings.HasSuffix(output, "\n") {
 		output = output[:len(output)-1]
 	}
-	
+
 	return output, nil
 }
 
@@ -104,22 +104,22 @@ func (f *TSVFormatter) formatTags(tags map[string]string) string {
 	if len(tags) == 0 {
 		return ""
 	}
-	
+
 	var pairs []string
-	
+
 	// Sort keys for consistent output
 	var keys []string
 	for key := range tags {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
-	
+
 	for _, key := range keys {
 		value := tags[key]
 		pair := fmt.Sprintf("%s=%s", f.escapeValue(key), f.escapeValue(value))
 		pairs = append(pairs, pair)
 	}
-	
+
 	return strings.Join(pairs, ";")
 }
 
@@ -128,12 +128,12 @@ func (f *TSVFormatter) formatReasons(reasons []string) string {
 	if len(reasons) == 0 {
 		return ""
 	}
-	
+
 	var escapedReasons []string
 	for _, reason := range reasons {
 		escapedReasons = append(escapedReasons, f.escapeValue(reason))
 	}
-	
+
 	return strings.Join(escapedReasons, ";")
 }
 
