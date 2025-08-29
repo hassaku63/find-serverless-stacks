@@ -16,6 +16,29 @@ A CLI tool to identify CloudFormation stacks deployed by Serverless Framework.
 
 ## Installation
 
+### Binary Download
+Download the latest release for your platform from the [GitHub Releases](https://github.com/hassaku63/find-serverless-stacks/releases) page.
+
+```bash
+# Linux (AMD64)
+curl -L https://github.com/hassaku63/find-serverless-stacks/releases/latest/download/find_serverless_stacks_<VERSION>_linux_amd64.tar.gz | tar xz
+sudo mv find_serverless_stacks /usr/local/bin/
+
+# macOS (Intel)
+curl -L https://github.com/hassaku63/find-serverless-stacks/releases/latest/download/find_serverless_stacks_<VERSION>_darwin_amd64.tar.gz | tar xz
+sudo mv find_serverless_stacks /usr/local/bin/
+
+# macOS (Apple Silicon)
+curl -L https://github.com/hassaku63/find-serverless-stacks/releases/latest/download/find_serverless_stacks_<VERSION>_darwin_arm64.tar.gz | tar xz
+sudo mv find_serverless_stacks /usr/local/bin/
+
+# Windows (PowerShell)
+Invoke-WebRequest -Uri "https://github.com/hassaku63/find-serverless-stacks/releases/latest/download/find_serverless_stacks_<VERSION>_windows_amd64.tar.gz" -OutFile "find_serverless_stacks.tar.gz"
+# Extract and add to PATH
+```
+
+Replace `<VERSION>` with the actual version number (e.g., `v1.0.0`).
+
 ### Go Install
 ```bash
 go install github.com/hassaku63/find-serverless-stacks/cmd/find_serverless_stacks@latest
@@ -26,11 +49,6 @@ go install github.com/hassaku63/find-serverless-stacks/cmd/find_serverless_stack
 git clone https://github.com/hassaku63/find-serverless-stacks.git
 cd find-serverless-stacks
 make build
-```
-
-### Manual Build
-```bash
-go build -o find_serverless_stacks ./find_serverless_stacks
 ```
 
 ## Usage
