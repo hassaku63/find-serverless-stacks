@@ -1,8 +1,8 @@
-# find_sls3_stacks Makefile
+# find_serverless_stacks Makefile
 
 # Variables
-BINARY_NAME=find_sls3_stacks
-MAIN_PACKAGE=./cmd/find_sls3_stacks
+BINARY_NAME=find_serverless_stacks
+MAIN_PACKAGE=./cmd/find_serverless_stacks
 GO_VERSION=1.19
 VERSION?=dev
 BUILD_TIME=$(shell date -u '+%Y-%m-%d_%H:%M:%S')

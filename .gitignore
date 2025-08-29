@@ -18,7 +18,7 @@
 go.work
 
 # Build artifacts
-find_sls3_stacks
+find_serverless_stacks
 build/
 dist/
 

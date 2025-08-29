@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hassaku63/find-sls3-stacks/internal/models"
+	"github.com/hassaku63/find-serverless-stacks/internal/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

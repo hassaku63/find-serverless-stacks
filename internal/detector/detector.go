@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation/types"
-	"github.com/hassaku63/find-sls3-stacks/internal/models"
+	"github.com/hassaku63/find-serverless-stacks/internal/models"
 )
 
 // AWSClient defines the interface for AWS operations needed by the detector

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hassaku63/find-sls3-stacks/internal/models"
+	"github.com/hassaku63/find-serverless-stacks/internal/models"
 )
 
 // Formatter defines the interface for output formatters
