@@ -160,20 +160,56 @@ find_sls3_stacks --region us-east-1
 - Go 1.19 or later
 - AWS CLI configured
 
-### Build
+### Quick Start
 ```bash
 git clone https://github.com/username/find-sls3-stacks.git
 cd find-sls3-stacks
-go build -o find_sls3_stacks ./cmd/find_sls3_stacks
+make build
 ```
 
-### Run Tests
-```bash
-# Unit tests
-go test ./...
+### Available Make Targets
 
-# Integration tests (requires AWS credentials)
-go test ./... -tags=integration
+#### Build and Clean
+```bash
+make build         # Build the binary
+make build-cross   # Cross-compile for multiple platforms
+make clean         # Clean build artifacts
+```
+
+#### Testing
+```bash
+make test              # Run unit tests
+make test-verbose      # Run unit tests with verbose output
+make test-coverage     # Run tests with coverage report
+make test-integration  # Run integration tests (requires AWS credentials)
+```
+
+#### Development Tools
+```bash
+make fmt           # Format code
+make lint          # Run linter (requires golangci-lint)
+make vet           # Run go vet
+make run-dev       # Run with sample development parameters
+```
+
+#### Dependencies and Installation
+```bash
+make deps-update   # Update and tidy dependencies
+make deps-list     # List all dependencies
+make install       # Install binary to GOPATH/bin
+make uninstall     # Remove binary from GOPATH/bin
+```
+
+#### Other Tasks
+```bash
+make docker-build  # Build Docker image
+make help          # Show all available targets
+```
+
+### Manual Build (Alternative)
+If you prefer not to use Makefile:
+```bash
+go build -o find_sls3_stacks ./cmd/find_sls3_stacks
 ```
 
 ## License
