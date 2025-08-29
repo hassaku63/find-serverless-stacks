@@ -32,7 +32,7 @@ func BenchmarkDetector_ConcurrentProcessing(b *testing.B) {
 		b.Run(tc.name, func(b *testing.B) {
 			// Create test data
 			stacks, resources, details := createLargeTestDataset(tc.numStacks)
-			
+
 			mockClient := &mockSlowAWSClient{
 				stacks:    stacks,
 				resources: resources,
@@ -90,7 +90,7 @@ func TestDetector_LargeScale(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			// Create large test dataset
 			stacks, resources, details := createLargeTestDatasetWithRatio(tc.numStacks, tc.serverlessPercent)
-			
+
 			mockClient := &mockSlowAWSClient{
 				stacks:    stacks,
 				resources: resources,
@@ -109,7 +109,7 @@ func TestDetector_LargeScale(t *testing.T) {
 			assert.Len(t, detectedStacks, tc.expectedServerless)
 			assert.Less(t, elapsed, tc.maxExecutionTime)
 
-			t.Logf("Processed %d stacks in %v, detected %d serverless stacks", 
+			t.Logf("Processed %d stacks in %v, detected %d serverless stacks",
 				tc.numStacks, elapsed, len(detectedStacks))
 		})
 	}
@@ -151,7 +151,7 @@ func TestDetector_ConcurrencyScaling(t *testing.T) {
 			assert.Greater(t, len(detectedStacks), 0)
 
 			results[workers] = elapsed
-			t.Logf("Workers: %d, Time: %v, Rate: %.2f stacks/sec", 
+			t.Logf("Workers: %d, Time: %v, Rate: %.2f stacks/sec",
 				workers, elapsed, float64(numStacks)/elapsed.Seconds())
 		})
 	}
@@ -192,7 +192,7 @@ func TestDetector_MemoryUsage(t *testing.T) {
 
 	// Use TotalAlloc for more accurate measurement of total allocated memory
 	memUsed := int64(m2.TotalAlloc - m1.TotalAlloc)
-	
+
 	// Avoid negative memory usage (can happen with GC timing)
 	if memUsed < 0 {
 		memUsed = int64(m2.Alloc) // Fallback to current allocation
@@ -224,11 +224,11 @@ func createLargeTestDatasetWithRatio(numStacks int, serverlessRatio float64) ([]
 	for i := 0; i < numStacks; i++ {
 		stackName := aws.String(fmt.Sprintf("test-stack-%d", i))
 		stackId := aws.String(fmt.Sprintf("arn:aws:cloudformation:us-east-1:123456789012:stack/test-stack-%d/abc%d", i, i))
-		
+
 		stacks[i] = types.StackSummary{
-			StackName:   stackName,
-			StackId:     stackId,
-			StackStatus: types.StackStatusCreateComplete,
+			StackName:    stackName,
+			StackId:      stackId,
+			StackStatus:  types.StackStatusCreateComplete,
 			CreationTime: aws.Time(time.Now().Add(-time.Duration(i) * time.Hour)),
 		}
 

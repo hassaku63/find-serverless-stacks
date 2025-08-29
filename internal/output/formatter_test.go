@@ -12,7 +12,7 @@ import (
 
 func TestJSONFormatter_Format(t *testing.T) {
 	formatter := &JSONFormatter{}
-	
+
 	// Test data
 	stacks := []models.Stack{
 		{
@@ -54,7 +54,7 @@ func TestJSONFormatter_Format(t *testing.T) {
 				assert.Contains(t, output, `"stackName":"test-stack-2"`)
 				assert.Contains(t, output, `"region":"us-east-1"`)
 				assert.Contains(t, output, `"Environment":"test"`)
-				
+
 				// Should be properly formatted JSON (no extra whitespace)
 				assert.False(t, strings.Contains(output, "\n"))
 			},
@@ -91,7 +91,7 @@ func TestJSONFormatter_Format(t *testing.T) {
 
 func TestTSVFormatter_Format(t *testing.T) {
 	formatter := &TSVFormatter{}
-	
+
 	// Test data
 	stacks := []models.Stack{
 		{
@@ -128,19 +128,19 @@ func TestTSVFormatter_Format(t *testing.T) {
 			stacks: stacks,
 			validate: func(t *testing.T, output string) {
 				lines := strings.Split(strings.TrimSpace(output), "\n")
-				
+
 				// Should have header + 2 data rows
 				assert.Len(t, lines, 3)
-				
+
 				// Check header
 				expectedHeader := "StackName\tStackID\tRegion\tDescription\tCreatedAt\tUpdatedAt\tTags\tReasons"
 				assert.Equal(t, expectedHeader, lines[0])
-				
+
 				// Check first data row
 				assert.Contains(t, lines[1], "test-stack-1")
 				assert.Contains(t, lines[1], "us-east-1")
 				assert.Contains(t, lines[1], "Test stack 1")
-				
+
 				// Check second data row
 				assert.Contains(t, lines[2], "test-stack-2")
 				assert.Contains(t, lines[2], "us-east-1")
@@ -151,7 +151,7 @@ func TestTSVFormatter_Format(t *testing.T) {
 			stacks: []models.Stack{},
 			validate: func(t *testing.T, output string) {
 				lines := strings.Split(strings.TrimSpace(output), "\n")
-				
+
 				// Should only have header
 				assert.Len(t, lines, 1)
 				expectedHeader := "StackName\tStackID\tRegion\tDescription\tCreatedAt\tUpdatedAt\tTags\tReasons"
@@ -163,7 +163,7 @@ func TestTSVFormatter_Format(t *testing.T) {
 			stacks: stacks[:1],
 			validate: func(t *testing.T, output string) {
 				lines := strings.Split(strings.TrimSpace(output), "\n")
-				
+
 				// Should have header + 1 data row
 				assert.Len(t, lines, 2)
 				assert.Contains(t, lines[1], "test-stack-1")
@@ -182,7 +182,7 @@ func TestTSVFormatter_Format(t *testing.T) {
 
 func TestTSVFormatter_EscapeTabsAndNewlines(t *testing.T) {
 	formatter := &TSVFormatter{}
-	
+
 	// Stack with tabs and newlines in description
 	stacks := []models.Stack{
 		{
@@ -199,10 +199,10 @@ func TestTSVFormatter_EscapeTabsAndNewlines(t *testing.T) {
 
 	output, err := formatter.Format(stacks)
 	require.NoError(t, err)
-	
+
 	// Should escape tabs and newlines
 	assert.Contains(t, output, "Description with\\ttabs and\\nnewlines")
-	
+
 	// Should not contain actual tabs or newlines in the data
 	lines := strings.Split(strings.TrimSpace(output), "\n")
 	assert.Len(t, lines, 2) // Only header and one data row
@@ -221,7 +221,7 @@ func TestFormatterFactory_Create(t *testing.T) {
 			expectType: &JSONFormatter{},
 		},
 		{
-			name:       "create TSV formatter", 
+			name:       "create TSV formatter",
 			format:     "tsv",
 			expectType: &TSVFormatter{},
 		},
@@ -240,7 +240,7 @@ func TestFormatterFactory_Create(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			formatter, err := FormatterFactory(tt.format)
-			
+
 			if tt.expectError {
 				assert.Error(t, err)
 				assert.Nil(t, formatter)

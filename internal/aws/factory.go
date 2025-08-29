@@ -19,7 +19,7 @@ func CreateClient(ctx context.Context, auth AuthConfig) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// Apply AssumeRole if specified
 	if auth.AssumeRole != nil {
 		cfg, err = applyAssumeRoleToConfig(ctx, cfg, auth.AssumeRole)
@@ -27,35 +27,35 @@ func CreateClient(ctx context.Context, auth AuthConfig) (*Client, error) {
 			return nil, err
 		}
 	}
-	
+
 	// Create CloudFormation service client
 	cfClient := cloudformation.NewFromConfig(cfg)
-	
+
 	// Create our client wrapper
 	client := NewClient(cfClient, auth.Region)
-	
+
 	return client, nil
 }
 
 // loadBaseAWSConfig loads the base AWS configuration without AssumeRole
 func loadBaseAWSConfig(ctx context.Context, auth AuthConfig) (aws.Config, error) {
 	var opts []func(*config.LoadOptions) error
-	
+
 	// Set profile if specified
 	if auth.Profile != "" {
 		opts = append(opts, config.WithSharedConfigProfile(auth.Profile))
 	}
-	
+
 	// Set region
 	if auth.Region != "" {
 		opts = append(opts, config.WithRegion(auth.Region))
 	}
-	
+
 	cfg, err := config.LoadDefaultConfig(ctx, opts...)
 	if err != nil {
 		return aws.Config{}, fmt.Errorf("failed to load AWS configuration: %w", err)
 	}
-	
+
 	return cfg, nil
 }
 

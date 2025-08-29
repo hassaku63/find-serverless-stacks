@@ -16,7 +16,7 @@ import (
 type AuthConfig struct {
 	Profile string
 	Region  string
-	
+
 	// AssumeRole configuration (Phase 1)
 	AssumeRole *AssumeRoleCredentials
 }

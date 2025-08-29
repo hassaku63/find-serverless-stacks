@@ -14,18 +14,18 @@ import (
 
 // mockErrorAWSClient simulates various AWS error conditions
 type mockErrorAWSClient struct {
-	listStacksError       error
-	getResourcesError     error
-	getDetailsError       error
-	inconsistentBehavior  bool
-	nilStackNames         bool
+	listStacksError      error
+	getResourcesError    error
+	getDetailsError      error
+	inconsistentBehavior bool
+	nilStackNames        bool
 }
 
 func (m *mockErrorAWSClient) ListActiveStacks(ctx context.Context) ([]types.StackSummary, error) {
 	if m.listStacksError != nil {
 		return nil, m.listStacksError
 	}
-	
+
 	if m.nilStackNames {
 		return []types.StackSummary{
 			{
@@ -35,7 +35,7 @@ func (m *mockErrorAWSClient) ListActiveStacks(ctx context.Context) ([]types.Stac
 			},
 		}, nil
 	}
-	
+
 	return []types.StackSummary{
 		{
 			StackName:   aws.String("test-stack"),
@@ -49,12 +49,12 @@ func (m *mockErrorAWSClient) GetStackResources(ctx context.Context, stackName st
 	if m.getResourcesError != nil {
 		return nil, m.getResourcesError
 	}
-	
+
 	if m.inconsistentBehavior && stackName == "test-stack" {
 		// Simulate intermittent failures
 		return nil, errors.New("temporary resource access failure")
 	}
-	
+
 	return []types.StackResource{
 		{
 			LogicalResourceId: aws.String("ServerlessDeploymentBucket"),
@@ -67,7 +67,7 @@ func (m *mockErrorAWSClient) GetStackDetails(ctx context.Context, stackName stri
 	if m.getDetailsError != nil {
 		return nil, m.getDetailsError
 	}
-	
+
 	return &types.Stack{
 		StackName:   aws.String(stackName),
 		StackId:     aws.String("arn:aws:cloudformation:us-east-1:123456789012:stack/" + stackName + "/abc123"),
@@ -85,7 +85,7 @@ func TestDetector_ListStacksError(t *testing.T) {
 	ctx := context.Background()
 
 	stacks, err := detector.DetectServerlessStacks(ctx)
-	
+
 	assert.Error(t, err)
 	assert.Nil(t, stacks)
 	assert.Contains(t, err.Error(), "access denied")
@@ -101,7 +101,7 @@ func TestDetector_NilStackName(t *testing.T) {
 	ctx := context.Background()
 
 	stacks, err := detector.DetectServerlessStacks(ctx)
-	
+
 	// Should not error, but should skip stacks with nil names
 	require.NoError(t, err)
 	assert.Empty(t, stacks)
@@ -117,7 +117,7 @@ func TestDetector_GetResourcesError(t *testing.T) {
 	ctx := context.Background()
 
 	stacks, err := detector.DetectServerlessStacks(ctx)
-	
+
 	// Should not fail completely, just skip problematic stacks
 	require.NoError(t, err)
 	assert.Empty(t, stacks) // No stacks detected due to resource access failure
@@ -133,11 +133,11 @@ func TestDetector_GetDetailsError(t *testing.T) {
 	ctx := context.Background()
 
 	stacks, err := detector.DetectServerlessStacks(ctx)
-	
+
 	// Should continue processing even if details can't be retrieved
 	require.NoError(t, err)
 	assert.Len(t, stacks, 1) // Should still detect the serverless stack
-	
+
 	// Verify that basic information is still populated
 	stack := stacks[0]
 	assert.Equal(t, "test-stack", stack.StackName)
@@ -155,7 +155,7 @@ func TestDetector_InconsistentBehavior(t *testing.T) {
 	ctx := context.Background()
 
 	stacks, err := detector.DetectServerlessStacks(ctx)
-	
+
 	// Should handle intermittent failures gracefully
 	require.NoError(t, err)
 	assert.Empty(t, stacks) // No stacks detected due to resource access failure
@@ -190,13 +190,13 @@ func TestDetector_ContextCancellation(t *testing.T) {
 	}
 
 	detector := NewDetector(mockClient, "us-east-1")
-	
+
 	// Create a context that will be cancelled quickly
 	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
 	defer cancel()
 
 	stacks, err := detector.DetectServerlessStacks(ctx)
-	
+
 	// The operation might complete or be cancelled depending on timing
 	if err != nil {
 		// If cancelled, should contain context error
@@ -234,7 +234,7 @@ func TestDetector_EmptyResourceList(t *testing.T) {
 	ctx := context.Background()
 
 	stacks, err := detector.DetectServerlessStacks(ctx)
-	
+
 	require.NoError(t, err)
 	assert.Empty(t, stacks) // Should not detect any serverless stacks
 }
@@ -272,10 +272,10 @@ func TestDetector_MalformedStackResources(t *testing.T) {
 	ctx := context.Background()
 
 	stacks, err := detector.DetectServerlessStacks(ctx)
-	
+
 	require.NoError(t, err)
 	assert.Len(t, stacks, 1) // Should still detect the valid resource
-	
+
 	stack := stacks[0]
 	assert.Equal(t, "malformed-stack", stack.StackName)
 	assert.Contains(t, stack.Reasons, "Contains resource with logical ID 'ServerlessDeploymentBucket'")
@@ -314,7 +314,7 @@ func TestDetector_ResilientToPartialFailures(t *testing.T) {
 	ctx := context.Background()
 
 	stacks, err := detector.DetectServerlessStacks(ctx)
-	
+
 	require.NoError(t, err)
 	assert.Len(t, stacks, 1) // Should detect only the successful stack
 	assert.Equal(t, "good-stack", stacks[0].StackName)
@@ -336,7 +336,7 @@ func (m *mockSelectiveErrorAWSClient) GetStackResources(ctx context.Context, sta
 	if m.failingStacks[stackName] {
 		return nil, errors.New("resource access failed for " + stackName)
 	}
-	
+
 	if resources, exists := m.resources[stackName]; exists {
 		return resources, nil
 	}

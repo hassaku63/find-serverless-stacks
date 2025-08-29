@@ -63,11 +63,11 @@ func TestDetector_DetectServerlessStacks_WithServerlessDeploymentBucket(t *testi
 		},
 		details: map[string]*types.Stack{
 			"my-api-dev": {
-				StackName:    aws.String("my-api-dev"),
-				StackId:      aws.String("arn:aws:cloudformation:us-east-1:123456789012:stack/my-api-dev/abc123"),
-				StackStatus:  types.StackStatusCreateComplete,
-				Description:  aws.String("My Serverless Framework v3 stack"),
-				CreationTime: aws.Time(mustParseTime("2023-10-01T12:34:56Z")),
+				StackName:       aws.String("my-api-dev"),
+				StackId:         aws.String("arn:aws:cloudformation:us-east-1:123456789012:stack/my-api-dev/abc123"),
+				StackStatus:     types.StackStatusCreateComplete,
+				Description:     aws.String("My Serverless Framework v3 stack"),
+				CreationTime:    aws.Time(mustParseTime("2023-10-01T12:34:56Z")),
 				LastUpdatedTime: aws.Time(mustParseTime("2023-10-02T12:34:56Z")),
 				Tags: []types.Tag{
 					{Key: aws.String("Owner"), Value: aws.String("team-a")},

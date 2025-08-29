@@ -15,12 +15,12 @@ import (
 
 // mockSlowAWSClient simulates a slow AWS client for concurrent testing
 type mockSlowAWSClient struct {
-	stacks       []types.StackSummary
-	resources    map[string][]types.StackResource
-	details      map[string]*types.Stack
-	delay        time.Duration
-	callCount    int
-	mu           sync.Mutex
+	stacks    []types.StackSummary
+	resources map[string][]types.StackResource
+	details   map[string]*types.Stack
+	delay     time.Duration
+	callCount int
+	mu        sync.Mutex
 }
 
 func (m *mockSlowAWSClient) ListActiveStacks(ctx context.Context) ([]types.StackSummary, error) {
@@ -36,7 +36,7 @@ func (m *mockSlowAWSClient) GetStackResources(ctx context.Context, stackName str
 	m.mu.Lock()
 	m.callCount++
 	m.mu.Unlock()
-	
+
 	if resources, exists := m.resources[stackName]; exists {
 		return resources, nil
 	}
@@ -48,7 +48,7 @@ func (m *mockSlowAWSClient) GetStackDetails(ctx context.Context, stackName strin
 	m.mu.Lock()
 	m.callCount++
 	m.mu.Unlock()
-	
+
 	if details, exists := m.details[stackName]; exists {
 		return details, nil
 	}
@@ -71,7 +71,7 @@ func TestDetector_ConcurrentProcessing(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		stackName := aws.String(fmt.Sprintf("test-stack-%d", i))
 		stackId := aws.String(fmt.Sprintf("arn:aws:cloudformation:us-east-1:123456789012:stack/test-stack-%d/abc%d", i, i))
-		
+
 		stacks = append(stacks, types.StackSummary{
 			StackName:   stackName,
 			StackId:     stackId,
