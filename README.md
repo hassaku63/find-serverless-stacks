@@ -263,3 +263,6 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 Pull requests and issue reports are welcome.
 
+## Blog
+
+[Serverless Framework 製の Stack をリストアップする CLI ツールを Vibe Coding でサクッと自作して、公開してみた](https://blog.serverworks.co.jp/2025/08/29/231816)
